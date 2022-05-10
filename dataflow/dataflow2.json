@@ -1,0 +1,38 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sapska1json",
+						"type": "DatasetReference"
+					},
+					"name": "sapska1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "sapska1parquet",
+						"type": "DatasetReference"
+					},
+					"name": "sapska1parquet"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> sapska1",
+				"sapska1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sapska1parquet"
+			]
+		}
+	}
+}
