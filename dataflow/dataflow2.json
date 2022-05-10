@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sapska1"
+				},
+				{
+					"dataset": {
+						"referenceName": "sapskatjson",
+						"type": "DatasetReference"
+					},
+					"name": "sapskat"
 				}
 			],
 			"sinks": [
@@ -19,6 +26,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sapska1parquet"
+				},
+				{
+					"dataset": {
+						"referenceName": "sapskatparquet1",
+						"type": "DatasetReference"
+					},
+					"name": "ssapskatparquet"
 				}
 			],
 			"transformations": [],
@@ -27,11 +41,20 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> sapska1",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> sapskat",
 				"sapska1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sapska1parquet"
+				"     skipDuplicateMapOutputs: true) ~> sapska1parquet",
+				"sapskat sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ssapskatparquet"
 			]
 		}
 	}
