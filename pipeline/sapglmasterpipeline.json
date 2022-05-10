@@ -46,7 +46,14 @@
 			{
 				"name": "sapskat",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "sapska1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -57,15 +64,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
+						"type": "SapTableSource",
+						"partitionOption": "None"
 					},
 					"sink": {
 						"type": "JsonSink",
@@ -80,7 +80,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "sapskatjson",
+						"referenceName": "SapTableResource1",
 						"type": "DatasetReference"
 					}
 				],
