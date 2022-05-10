@@ -1,0 +1,62 @@
+{
+	"name": "sapglparquet",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "sapska1json",
+						"type": "DatasetReference"
+					},
+					"name": "sapska1"
+				},
+				{
+					"dataset": {
+						"referenceName": "sapskatjson",
+						"type": "DatasetReference"
+					},
+					"name": "sapskat"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "sapska1parquet",
+						"type": "DatasetReference"
+					},
+					"name": "sapska1parquet"
+				},
+				{
+					"dataset": {
+						"referenceName": "sapskatparquet1",
+						"type": "DatasetReference"
+					},
+					"name": "ssapskatparquet"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> sapska1",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> sapskat",
+				"sapska1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sapska1parquet",
+				"sapskat sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     truncate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ssapskatparquet"
+			]
+		}
+	}
+}

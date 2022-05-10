@@ -1,0 +1,20 @@
+{
+	"name": "sapska1parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "kmlinkedserviceblob1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "output",
+				"container": "km1cont2"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
