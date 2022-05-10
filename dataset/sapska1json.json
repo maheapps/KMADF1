@@ -1,0 +1,20 @@
+{
+	"name": "sapska1json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "kmlinkedserviceblob1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sapska1json",
+				"folderPath": "input",
+				"container": "km1cont1"
+			}
+		},
+		"schema": {}
+	}
+}
