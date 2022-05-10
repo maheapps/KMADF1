@@ -21,6 +21,127 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "kmoutput2",
+								"type": "DatasetReference"
+							},
+							"name": "SKA1"
+						},
+						{
+							"dataset": {
+								"referenceName": "kmoutputfile2",
+								"type": "DatasetReference"
+							},
+							"name": "SKAT"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sapglmaster",
+								"type": "DatasetReference"
+							},
+							"name": "glmaster"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SKA1JOINSKAT"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          MANDT as string,",
+						"          KTOPL as string,",
+						"          SAKNR as string,",
+						"          XBILK as string,",
+						"          SAKAN as string,",
+						"          BILKT as string,",
+						"          ERDAT as string,",
+						"          ERNAM as string,",
+						"          GVTYP as string,",
+						"          KTOKS as string,",
+						"          MUSTR as string,",
+						"          VBUND as string,",
+						"          XLOEV as string,",
+						"          XSPEA as string,",
+						"          XSPEB as string,",
+						"          XSPEP as string,",
+						"          MCOD1 as string,",
+						"          FUNC_AREA as string",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     partitionBy('hash', 1)) ~> SKA1",
+						"source(output(",
+						"          MANDT as short,",
+						"          SPRAS as boolean,",
+						"          KTOPL as string,",
+						"          SAKNR as string,",
+						"          TXT20 as string,",
+						"          TXT50 as string,",
+						"          MCOD1 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     partitionBy('hash', 1)) ~> SKAT",
+						"SKA1, SKAT join(SKA1@SAKNR == SKAT@SAKNR,",
+						"     joinType:'inner',",
+						"     broadcast: 'auto')~> SKA1JOINSKAT",
+						"SKA1JOINSKAT select(mapColumn(",
+						"          MANDT = SKA1@MANDT,",
+						"          KTOPL = SKA1@KTOPL,",
+						"          SAKNR = SKA1@SAKNR,",
+						"          XBILK,",
+						"          SAKAN,",
+						"          BILKT,",
+						"          ERDAT,",
+						"          ERNAM,",
+						"          GVTYP,",
+						"          KTOKS,",
+						"          MCOD1 = SKA1@MCOD1,",
+						"          SPRAS,",
+						"          TXT50,",
+						"          MCOD1 = SKAT@MCOD1",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(equals(KTOPL,'ACIA')) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Column_1 as string,",
+						"          Column_2 as string,",
+						"          Column_3 as string,",
+						"          Column_4 as string,",
+						"          Column_5 as string",
+						"     ),",
+						"     partitionFileNames:['sapglmaster.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> glmaster"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/sapgldata')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -66,7 +187,9 @@
 				"annotations": [],
 				"lastPublishTime": "2022-05-08T07:03:12Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/sapglmaster')]",
@@ -248,9 +371,16 @@
 						]
 					},
 					{
-						"name": "Copy data1",
+						"name": "sapskat",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "sapska1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -260,8 +390,42 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
 							"enableStaging": false
-						}
+						},
+						"inputs": [
+							{
+								"referenceName": "sapskatjson",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sapskatjson",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {

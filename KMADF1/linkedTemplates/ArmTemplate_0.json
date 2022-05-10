@@ -496,6 +496,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/sapskatjson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "sapskatjson",
+						"folderPath": "input",
+						"container": "km1cont1"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/foreachpipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1003,131 +1028,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SapTable1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "kmoutput2",
-								"type": "DatasetReference"
-							},
-							"name": "SKA1"
-						},
-						{
-							"dataset": {
-								"referenceName": "kmoutputfile2",
-								"type": "DatasetReference"
-							},
-							"name": "SKAT"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "sapglmaster",
-								"type": "DatasetReference"
-							},
-							"name": "glmaster"
-						}
-					],
-					"transformations": [
-						{
-							"name": "SKA1JOINSKAT"
-						},
-						{
-							"name": "select1"
-						},
-						{
-							"name": "filter1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          MANDT as string,",
-						"          KTOPL as string,",
-						"          SAKNR as string,",
-						"          XBILK as string,",
-						"          SAKAN as string,",
-						"          BILKT as string,",
-						"          ERDAT as string,",
-						"          ERNAM as string,",
-						"          GVTYP as string,",
-						"          KTOKS as string,",
-						"          MUSTR as string,",
-						"          VBUND as string,",
-						"          XLOEV as string,",
-						"          XSPEA as string,",
-						"          XSPEB as string,",
-						"          XSPEP as string,",
-						"          MCOD1 as string,",
-						"          FUNC_AREA as string",
-						"     ),",
-						"     allowSchemaDrift: false,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     partitionBy('hash', 1)) ~> SKA1",
-						"source(output(",
-						"          MANDT as short,",
-						"          SPRAS as boolean,",
-						"          KTOPL as string,",
-						"          SAKNR as string,",
-						"          TXT20 as string,",
-						"          TXT50 as string,",
-						"          MCOD1 as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     partitionBy('hash', 1)) ~> SKAT",
-						"SKA1, SKAT join(SKA1@SAKNR == SKAT@SAKNR,",
-						"     joinType:'inner',",
-						"     broadcast: 'auto')~> SKA1JOINSKAT",
-						"SKA1JOINSKAT select(mapColumn(",
-						"          MANDT = SKA1@MANDT,",
-						"          KTOPL = SKA1@KTOPL,",
-						"          SAKNR = SKA1@SAKNR,",
-						"          XBILK,",
-						"          SAKAN,",
-						"          BILKT,",
-						"          ERDAT,",
-						"          ERNAM,",
-						"          GVTYP,",
-						"          KTOKS,",
-						"          MCOD1 = SKA1@MCOD1,",
-						"          SPRAS,",
-						"          TXT50,",
-						"          MCOD1 = SKAT@MCOD1",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 filter(equals(KTOPL,'ACIA')) ~> filter1",
-						"filter1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          Column_1 as string,",
-						"          Column_2 as string,",
-						"          Column_3 as string,",
-						"          Column_4 as string,",
-						"          Column_5 as string",
-						"     ),",
-						"     partitionFileNames:['sapglmaster.csv'],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> glmaster"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/kmoutput2')]",
-				"[concat(variables('factoryId'), '/datasets/kmoutputfile2')]",
-				"[concat(variables('factoryId'), '/datasets/sapglmaster')]"
 			]
 		}
 	]
