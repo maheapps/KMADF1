@@ -1,0 +1,2474 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "KMADF1"
+		},
+		"SapTable1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SapTable1'"
+		},
+		"kmlinkedserviceblob1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'kmlinkedserviceblob1'"
+		},
+		"SapTable1_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "800"
+		},
+		"SapTable1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "DIGITAL6"
+		},
+		"SapTable1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "52.252.116.118"
+		},
+		"SapTable1_properties_typeProperties_systemNumber": {
+			"type": "string",
+			"defaultValue": "00"
+		},
+		"filetrigger1_properties_salesdatapipiline_parameters_filename": {
+			"type": "string",
+			"defaultValue": "hourlysales"
+		},
+		"filetrigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e7eeffbb-a3a2-46ab-aaf5-b356c47bb033/resourceGroups/KMRG/providers/Microsoft.Storage/storageAccounts/kmstoracc1"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/foreachpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "foreachpipeline",
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.foldername",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "copyoutput",
+									"description": "copyoutput",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "kminputfile1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Demoforeach",
+											"type": "DatasetReference",
+											"parameters": {
+												"folder": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"foldername": {
+						"type": "array",
+						"defaultValue": [
+							1,
+							2,
+							3
+						]
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-03T15:52:03Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/kminputfile1')]",
+				"[concat(variables('factoryId'), '/datasets/Demoforeach')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "km1cont1/input/DirtyData.csv"
+							},
+							{
+								"name": "Destination",
+								"value": "km1cont2/output/kmouput.csv"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Duration",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Time Period",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Date",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Date",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Pulse",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Pulse Rate",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Maxpulse",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Maxpulse",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Calories",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Calories Consumed",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "kminputfile1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "kmoutput2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"inputfilename": {
+						"type": "String"
+					},
+					"outputfilename": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-08T06:35:28Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/kminputfile1')]",
+				"[concat(variables('factoryId'), '/datasets/kmoutput2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "pipeline2",
+				"activities": [
+					{
+						"name": "Delete1",
+						"type": "Delete",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "filesdeleted",
+								"value": "files with km prefix deleted"
+							}
+						],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "kmoutput2",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"logStorageSettings": {
+								"linkedServiceName": {
+									"referenceName": "kmlinkedserviceblob1",
+									"type": "LinkedServiceReference"
+								},
+								"path": "km1cont2"
+							},
+							"enableLogging": true,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.csv",
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-08T06:35:28Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/kmoutput2')]",
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/restapipipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "restapipipeline",
+				"activities": [
+					{
+						"name": "pulldata",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://dummy.restapiexample.com/api/v1/employees",
+							"method": "GET",
+							"headers": {}
+						}
+					},
+					{
+						"name": "pushdatatoblob",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "pulldata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://kmstoracc1.blob.core.windows.net/kmrest/employee.json?sp=racw&st=2022-05-03T19:05:26Z&se=2022-07-31T03:05:26Z&spr=https&sv=2020-08-04&sr=c&sig=annfuotQ23TgUuGZhYyPVzHJ7zFgXsoGgHA5mp%2Fbb5I%3D",
+							"method": "PUT",
+							"headers": {
+								"x-ms-blob-type": "BlockBlob"
+							},
+							"body": {
+								"value": "@activity('pulldata').output",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-03T19:09:31Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/salesdatapipiline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "salesdatapipeline",
+				"activities": [
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "filename",
+							"value": {
+								"value": "@pipeline().parameters.filename",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "if hourly sales",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('filename'),'hourlysales')",
+								"type": "Expression"
+							},
+							"ifTrueActivities": [
+								{
+									"name": "CopyHourlySales",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": "HourlyRevenue.csv"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DelimitedText1",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DelimitedText2",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"filename": {
+						"type": "string",
+						"defaultValue": "hourlysales"
+					}
+				},
+				"variables": {
+					"filename": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-03T14:54:26Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapgldata')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "sapgldata",
+				"activities": [
+					{
+						"name": "dataflow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SKA1": {},
+									"SKAT": {},
+									"glmaster": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-08T07:03:12Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapglmaster')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "sapglmaster",
+				"activities": [
+					{
+						"name": "copyska1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SapTableSource",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SapTableResource2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "kmoutput2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "copyskat",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "copyska1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SapTableSource",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SapTableResource1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "kmoutputfile2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-08T06:35:28Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SapTableResource2')]",
+				"[concat(variables('factoryId'), '/datasets/kmoutput2')]",
+				"[concat(variables('factoryId'), '/datasets/SapTableResource1')]",
+				"[concat(variables('factoryId'), '/datasets/kmoutputfile2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapglmasterpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "sapska1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SapTableSource",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "SapTableResource3",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sapska1json",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"enableStaging": false
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SapTableResource3')]",
+				"[concat(variables('factoryId'), '/datasets/sapska1json')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapvbakpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "sapvbakpipeline",
+				"activities": [
+					{
+						"name": "copyvbak",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SapTableSource",
+								"rowCount": 100,
+								"rfcTableOptions": "",
+								"customRfcReadTableFunctionModule": "",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".csv"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "MANDT",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "MANDT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BUKRS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "BUKRS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BUTXT",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "BUTXT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ORT01",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "ORT01",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "LAND1",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "LAND1",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "WAERS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "WAERS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SPRAS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "SPRAS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KTOPL",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "KTOPL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "WAABW",
+											"type": "String",
+											"physicalType": "N"
+										},
+										"sink": {
+											"name": "WAABW",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PERIV",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "PERIV",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KOKFI",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "KOKFI",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RCOMP",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "RCOMP",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ADRNR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "ADRNR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "STCEG",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "STCEG",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FIKRS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "FIKRS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XFMCO",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XFMCO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XFMCB",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XFMCB",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XFMCA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XFMCA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TXJCD",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "TXJCD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FMHRDATE",
+											"type": "String",
+											"physicalType": "D"
+										},
+										"sink": {
+											"name": "FMHRDATE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BUVAR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "BUVAR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FDBUK",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "FDBUK",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XFDIS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XFDIS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XVALV",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XVALV",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XSKFN",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XSKFN",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KKBER",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "KKBER",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XMWSN",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XMWSN",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MREGL",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "MREGL",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XGSBE",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XGSBE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XGJRV",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XGJRV",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XKDFT",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XKDFT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XPROD",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XPROD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XEINK",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XEINK",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XJVAA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XJVAA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XVVWA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XVVWA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XSLTA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XSLTA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XFDMM",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XFDMM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XFDSD",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XFDSD",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XEXTB",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XEXTB",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EBUKR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "EBUKR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KTOP2",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "KTOP2",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "UMKRS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "UMKRS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BUKRS_GLOB",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "BUKRS_GLOB",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FSTVA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "FSTVA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OPVAR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "OPVAR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XCOVR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XCOVR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TXKRS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "TXKRS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "WFVAR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "WFVAR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XBBBF",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XBBBF",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XBBBE",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XBBBE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XBBBA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XBBBA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XBBKO",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XBBKO",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XSTDT",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XSTDT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MWSKV",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "MWSKV",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MWSKA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "MWSKA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "IMPDA",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "IMPDA",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XNEGP",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XNEGP",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XKKBI",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XKKBI",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "WT_NEWWT",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "WT_NEWWT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PP_PDATE",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "PP_PDATE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "INFMT",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "INFMT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FSTVARE",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "FSTVARE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "KOPIM",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "KOPIM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DKWEG",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "DKWEG",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OFFSACCT",
+											"type": "String",
+											"physicalType": "N"
+										},
+										"sink": {
+											"name": "OFFSACCT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BAPOVAR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "BAPOVAR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XCOS",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XCOS",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XCESSION",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XCESSION",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XSPLT",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XSPLT",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SURCCM",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "SURCCM",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DTPROV",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "DTPROV",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DTAMTC",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "DTAMTC",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DTTAXC",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "DTTAXC",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DTTDSP",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "DTTDSP",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DTAXR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "DTAXR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XVATDATE",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XVATDATE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PST_PER_VAR",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "PST_PER_VAR",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "XBBSC",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "XBBSC",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "F_OBSOLETE",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "F_OBSOLETE",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "FM_DERIVE_ACC",
+											"type": "String",
+											"physicalType": "C"
+										},
+										"sink": {
+											"name": "FM_DERIVE_ACC",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SapTableResource1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "kmoutputfile2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-05T15:50:29Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SapTableResource1')]",
+				"[concat(variables('factoryId'), '/datasets/kmoutputfile2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "hourlysales.csv",
+						"folderPath": "input",
+						"container": "km1cont1"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "km1cont2"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Demoforeach')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Demoforeach",
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"folder": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						},
+						"container": "km1cont2"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SapTableResource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SapTable1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapTableResource",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "SKAT"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SapTable1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SapTableResource2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SapTable1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapTableResource",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "SKA1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SapTable1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SapTableResource3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SapTable1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapTableResource",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "SKA1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SapTable1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/kminputfile1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "DirtyData.csv",
+						"folderPath": "input",
+						"container": "km1cont1"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Duration",
+						"type": "String"
+					},
+					{
+						"name": "Date",
+						"type": "String"
+					},
+					{
+						"name": "Pulse",
+						"type": "String"
+					},
+					{
+						"name": "Maxpulse",
+						"type": "String"
+					},
+					{
+						"name": "Calories",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/kmoutput2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ska1.csv",
+						"folderPath": "output2",
+						"container": "km1cont2"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "MANDT",
+						"type": "String"
+					},
+					{
+						"name": "KTOPL",
+						"type": "String"
+					},
+					{
+						"name": "SAKNR",
+						"type": "String"
+					},
+					{
+						"name": "XBILK",
+						"type": "String"
+					},
+					{
+						"name": "SAKAN",
+						"type": "String"
+					},
+					{
+						"name": "BILKT",
+						"type": "String"
+					},
+					{
+						"name": "ERDAT",
+						"type": "String"
+					},
+					{
+						"name": "ERNAM",
+						"type": "String"
+					},
+					{
+						"name": "GVTYP",
+						"type": "String"
+					},
+					{
+						"name": "KTOKS",
+						"type": "String"
+					},
+					{
+						"name": "MUSTR",
+						"type": "String"
+					},
+					{
+						"name": "VBUND",
+						"type": "String"
+					},
+					{
+						"name": "XLOEV",
+						"type": "String"
+					},
+					{
+						"name": "XSPEA",
+						"type": "String"
+					},
+					{
+						"name": "XSPEB",
+						"type": "String"
+					},
+					{
+						"name": "XSPEP",
+						"type": "String"
+					},
+					{
+						"name": "MCOD1",
+						"type": "String"
+					},
+					{
+						"name": "FUNC_AREA",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/kmoutputfile2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "skat",
+						"folderPath": "output",
+						"container": "km1cont2"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapglmaster')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "sapglmaster",
+						"folderPath": "input",
+						"container": "km1cont1"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapska1json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "sapska1json",
+						"folderPath": "input",
+						"container": "km1cont1"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SapTable1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "saptablelinkage",
+				"annotations": [],
+				"type": "SapTable",
+				"typeProperties": {
+					"clientId": "[parameters('SapTable1_properties_typeProperties_clientId')]",
+					"language": "EN",
+					"sncMode": false,
+					"userName": "[parameters('SapTable1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('SapTable1_password')]"
+					},
+					"server": "[parameters('SapTable1_properties_typeProperties_server')]",
+					"systemNumber": "[parameters('SapTable1_properties_typeProperties_systemNumber')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntime1",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/kmlinkedserviceblob1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('kmlinkedserviceblob1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/filetrigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "salesdatapipiline",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"filename": "[parameters('filetrigger1_properties_salesdatapipiline_parameters_filename')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/km1cont1/blobs/input/hourlysales",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('filetrigger1_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/salesdatapipiline')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"description": "selfhosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "kmoutput2",
+								"type": "DatasetReference"
+							},
+							"name": "SKA1"
+						},
+						{
+							"dataset": {
+								"referenceName": "kmoutputfile2",
+								"type": "DatasetReference"
+							},
+							"name": "SKAT"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sapglmaster",
+								"type": "DatasetReference"
+							},
+							"name": "glmaster"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SKA1JOINSKAT"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          MANDT as string,",
+						"          KTOPL as string,",
+						"          SAKNR as string,",
+						"          XBILK as string,",
+						"          SAKAN as string,",
+						"          BILKT as string,",
+						"          ERDAT as string,",
+						"          ERNAM as string,",
+						"          GVTYP as string,",
+						"          KTOKS as string,",
+						"          MUSTR as string,",
+						"          VBUND as string,",
+						"          XLOEV as string,",
+						"          XSPEA as string,",
+						"          XSPEB as string,",
+						"          XSPEP as string,",
+						"          MCOD1 as string,",
+						"          FUNC_AREA as string",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     partitionBy('hash', 1)) ~> SKA1",
+						"source(output(",
+						"          MANDT as short,",
+						"          SPRAS as boolean,",
+						"          KTOPL as string,",
+						"          SAKNR as string,",
+						"          TXT20 as string,",
+						"          TXT50 as string,",
+						"          MCOD1 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     partitionBy('hash', 1)) ~> SKAT",
+						"SKA1, SKAT join(SKA1@SAKNR == SKAT@SAKNR,",
+						"     joinType:'inner',",
+						"     broadcast: 'auto')~> SKA1JOINSKAT",
+						"SKA1JOINSKAT select(mapColumn(",
+						"          MANDT = SKA1@MANDT,",
+						"          KTOPL = SKA1@KTOPL,",
+						"          SAKNR = SKA1@SAKNR,",
+						"          XBILK,",
+						"          SAKAN,",
+						"          BILKT,",
+						"          ERDAT,",
+						"          ERNAM,",
+						"          GVTYP,",
+						"          KTOKS,",
+						"          MCOD1 = SKA1@MCOD1,",
+						"          SPRAS,",
+						"          TXT50,",
+						"          MCOD1 = SKAT@MCOD1",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 filter(equals(KTOPL,'ACIA')) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Column_1 as string,",
+						"          Column_2 as string,",
+						"          Column_3 as string,",
+						"          Column_4 as string,",
+						"          Column_5 as string",
+						"     ),",
+						"     partitionFileNames:['sapglmaster.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> glmaster"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/kmoutput2')]",
+				"[concat(variables('factoryId'), '/datasets/kmoutputfile2')]",
+				"[concat(variables('factoryId'), '/datasets/sapglmaster')]"
+			]
+		}
+	]
+}

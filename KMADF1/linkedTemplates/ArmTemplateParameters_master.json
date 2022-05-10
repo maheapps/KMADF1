@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "KMADF1"
+		},
+		"SapTable1_password": {
+			"value": ""
+		},
+		"kmlinkedserviceblob1_connectionString": {
+			"value": ""
+		},
+		"SapTable1_properties_typeProperties_clientId": {
+			"value": "800"
+		},
+		"SapTable1_properties_typeProperties_userName": {
+			"value": "DIGITAL6"
+		},
+		"SapTable1_properties_typeProperties_server": {
+			"value": "52.252.116.118"
+		},
+		"SapTable1_properties_typeProperties_systemNumber": {
+			"value": "00"
+		},
+		"filetrigger1_properties_salesdatapipiline_parameters_filename": {
+			"value": "hourlysales"
+		},
+		"filetrigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/e7eeffbb-a3a2-46ab-aaf5-b356c47bb033/resourceGroups/KMRG/providers/Microsoft.Storage/storageAccounts/kmstoracc1"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
