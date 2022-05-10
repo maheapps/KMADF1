@@ -9,7 +9,7 @@
 		"type": "SapTableResource",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "ska1"
+			"tableName": "SKA1"
 		}
 	}
 }
