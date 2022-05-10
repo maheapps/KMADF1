@@ -1,5 +1,5 @@
 {
-	"name": "dataflow2",
+	"name": "sapglparquet",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
