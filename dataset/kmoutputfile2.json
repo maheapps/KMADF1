@@ -1,0 +1,25 @@
+{
+	"name": "kmoutputfile2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "kmlinkedserviceblob1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "skat",
+				"folderPath": "output",
+				"container": "km1cont2"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

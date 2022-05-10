@@ -1,0 +1,98 @@
+{
+	"name": "kmoutput2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "kmlinkedserviceblob1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ska1.csv",
+				"folderPath": "output2",
+				"container": "km1cont2"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "MANDT",
+				"type": "String"
+			},
+			{
+				"name": "KTOPL",
+				"type": "String"
+			},
+			{
+				"name": "SAKNR",
+				"type": "String"
+			},
+			{
+				"name": "XBILK",
+				"type": "String"
+			},
+			{
+				"name": "SAKAN",
+				"type": "String"
+			},
+			{
+				"name": "BILKT",
+				"type": "String"
+			},
+			{
+				"name": "ERDAT",
+				"type": "String"
+			},
+			{
+				"name": "ERNAM",
+				"type": "String"
+			},
+			{
+				"name": "GVTYP",
+				"type": "String"
+			},
+			{
+				"name": "KTOKS",
+				"type": "String"
+			},
+			{
+				"name": "MUSTR",
+				"type": "String"
+			},
+			{
+				"name": "VBUND",
+				"type": "String"
+			},
+			{
+				"name": "XLOEV",
+				"type": "String"
+			},
+			{
+				"name": "XSPEA",
+				"type": "String"
+			},
+			{
+				"name": "XSPEB",
+				"type": "String"
+			},
+			{
+				"name": "XSPEP",
+				"type": "String"
+			},
+			{
+				"name": "MCOD1",
+				"type": "String"
+			},
+			{
+				"name": "FUNC_AREA",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

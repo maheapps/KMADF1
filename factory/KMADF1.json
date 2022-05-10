@@ -1,0 +1,9 @@
+{
+	"name": "KMADF1",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6e531cd9-816f-456b-9c2a-59c3917d3fb0",
+		"tenantId": "13a6f661-94ab-4103-9307-1e6b7bd42306"
+	}
+}

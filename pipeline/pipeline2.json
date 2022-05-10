@@ -1,0 +1,49 @@
+{
+	"name": "pipeline2",
+	"properties": {
+		"description": "pipeline2",
+		"activities": [
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "filesdeleted",
+						"value": "files with km prefix deleted"
+					}
+				],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "kmoutput2",
+						"type": "DatasetReference"
+					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "kmlinkedserviceblob1",
+							"type": "LinkedServiceReference"
+						},
+						"path": "km1cont2"
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.csv",
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-05-08T06:35:28Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

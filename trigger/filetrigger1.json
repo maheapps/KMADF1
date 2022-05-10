@@ -1,0 +1,27 @@
+{
+	"name": "filetrigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "salesdatapipiline",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"filename": "hourlysales"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/km1cont1/blobs/input/hourlysales",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/e7eeffbb-a3a2-46ab-aaf5-b356c47bb033/resourceGroups/KMRG/providers/Microsoft.Storage/storageAccounts/kmstoracc1",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
