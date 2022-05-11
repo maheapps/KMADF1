@@ -746,6 +746,57 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/sapglmasterparquet')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "sapvbakpipeline",
+				"activities": [
+					{
+						"name": "sapglparquet",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "sapglparquet",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sapska1": {},
+									"sapskat": {},
+									"sapska1parquet": {},
+									"sapskatparquet": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-05-05T15:50:29Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/sapglparquet')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/sapglmasterpipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1023,57 +1074,6 @@
 				"[concat(variables('factoryId'), '/datasets/sapska1json')]",
 				"[concat(variables('factoryId'), '/datasets/SapTableResource1')]",
 				"[concat(variables('factoryId'), '/datasets/sapskatjson')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sapglmasterparquet')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "sapvbakpipeline",
-				"activities": [
-					{
-						"name": "sapglparquet",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "sapglparquet",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"sapska1": {},
-									"sapskat": {},
-									"sapska1parquet": {},
-									"sapskatparquet": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2022-05-05T15:50:29Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/sapglparquet')]"
 			]
 		},
 		{
@@ -1802,24 +1802,38 @@
 							"name": "sapskatparquet"
 						}
 					],
-					"transformations": [],
+					"transformations": [
+						{
+							"name": "sapska1select"
+						},
+						{
+							"name": "sapskatselect"
+						}
+					],
 					"scriptLines": [
 						"source(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> sapska1",
+						"     documentForm: 'singleDocument',",
+						"     partitionBy('hash', 1)) ~> sapska1",
 						"source(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> sapskat",
-						"sapska1 sink(allowSchemaDrift: true,",
+						"     documentForm: 'singleDocument') ~> sapskat",
+						"sapska1 select(skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sapska1select",
+						"sapskat select(partitionBy('hash', 1),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sapskatselect",
+						"sapska1select sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
 						"     partitionFileNames:['sapska1parquet'],",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     partitionBy('hash', 1)) ~> sapska1parquet",
-						"sapskat sink(allowSchemaDrift: true,",
+						"sapskatselect sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
 						"     partitionFileNames:['sapskatparquet'],",
