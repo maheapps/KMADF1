@@ -777,7 +777,174 @@
 									"type": "JsonWriteSettings"
 								}
 							},
-							"enableStaging": false
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "MANDT",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['MANDT']"
+										}
+									},
+									{
+										"source": {
+											"name": "KTOPL",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['KTOPL']"
+										}
+									},
+									{
+										"source": {
+											"name": "SAKNR",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['SAKNR']"
+										}
+									},
+									{
+										"source": {
+											"name": "XBILK",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['XBILK']"
+										}
+									},
+									{
+										"source": {
+											"name": "SAKAN",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['SAKAN']"
+										}
+									},
+									{
+										"source": {
+											"name": "BILKT",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['BILKT']"
+										}
+									},
+									{
+										"source": {
+											"name": "ERDAT",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['ERDAT']"
+										}
+									},
+									{
+										"source": {
+											"name": "ERNAM",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['ERNAM']"
+										}
+									},
+									{
+										"source": {
+											"name": "GVTYP",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['GVTYP']"
+										}
+									},
+									{
+										"source": {
+											"name": "KTOKS",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['KTOKS']"
+										}
+									},
+									{
+										"source": {
+											"name": "MUSTR",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['MUSTR']"
+										}
+									},
+									{
+										"source": {
+											"name": "VBUND",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['VBUND']"
+										}
+									},
+									{
+										"source": {
+											"name": "XLOEV",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['XLOEV']"
+										}
+									},
+									{
+										"source": {
+											"name": "XSPEA",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['XSPEA']"
+										}
+									},
+									{
+										"source": {
+											"name": "XSPEB",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['XSPEB']"
+										}
+									},
+									{
+										"source": {
+											"name": "XSPEP",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['XSPEP']"
+										}
+									},
+									{
+										"source": {
+											"name": "MCOD1",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['MCOD1']"
+										}
+									},
+									{
+										"source": {
+											"name": "FUNC_AREA",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['FUNC_AREA']"
+										}
+									}
+								]
+							}
 						},
 						"inputs": [
 							{
@@ -859,18 +1026,18 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/sapvbakpipeline')]",
+			"name": "[concat(parameters('factoryName'), '/sapglmasterparquet')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"description": "sapvbakpipeline",
 				"activities": [
 					{
-						"name": "copyvbak",
-						"type": "Copy",
+						"name": "sapglparquet",
+						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "1.00:00:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -878,1010 +1045,24 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "SapTableSource",
-								"rowCount": 100,
-								"rfcTableOptions": "",
-								"customRfcReadTableFunctionModule": "",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".csv"
+							"dataflow": {
+								"referenceName": "sapglparquet",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sapska1": {},
+									"sapskat": {},
+									"sapska1parquet": {},
+									"sapskatparquet": {}
 								}
 							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "MANDT",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "MANDT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "BUKRS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "BUKRS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "BUTXT",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "BUTXT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "ORT01",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "ORT01",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "LAND1",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "LAND1",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "WAERS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "WAERS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "SPRAS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "SPRAS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "KTOPL",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "KTOPL",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "WAABW",
-											"type": "String",
-											"physicalType": "N"
-										},
-										"sink": {
-											"name": "WAABW",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "PERIV",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "PERIV",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "KOKFI",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "KOKFI",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "RCOMP",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "RCOMP",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "ADRNR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "ADRNR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "STCEG",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "STCEG",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FIKRS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "FIKRS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XFMCO",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XFMCO",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XFMCB",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XFMCB",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XFMCA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XFMCA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "TXJCD",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "TXJCD",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FMHRDATE",
-											"type": "String",
-											"physicalType": "D"
-										},
-										"sink": {
-											"name": "FMHRDATE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "BUVAR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "BUVAR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FDBUK",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "FDBUK",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XFDIS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XFDIS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XVALV",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XVALV",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XSKFN",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XSKFN",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "KKBER",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "KKBER",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XMWSN",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XMWSN",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "MREGL",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "MREGL",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XGSBE",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XGSBE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XGJRV",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XGJRV",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XKDFT",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XKDFT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XPROD",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XPROD",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XEINK",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XEINK",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XJVAA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XJVAA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XVVWA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XVVWA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XSLTA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XSLTA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XFDMM",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XFDMM",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XFDSD",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XFDSD",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XEXTB",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XEXTB",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "EBUKR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "EBUKR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "KTOP2",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "KTOP2",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "UMKRS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "UMKRS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "BUKRS_GLOB",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "BUKRS_GLOB",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FSTVA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "FSTVA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "OPVAR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "OPVAR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XCOVR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XCOVR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "TXKRS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "TXKRS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "WFVAR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "WFVAR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XBBBF",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XBBBF",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XBBBE",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XBBBE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XBBBA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XBBBA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XBBKO",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XBBKO",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XSTDT",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XSTDT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "MWSKV",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "MWSKV",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "MWSKA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "MWSKA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "IMPDA",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "IMPDA",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XNEGP",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XNEGP",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XKKBI",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XKKBI",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "WT_NEWWT",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "WT_NEWWT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "PP_PDATE",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "PP_PDATE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "INFMT",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "INFMT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FSTVARE",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "FSTVARE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "KOPIM",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "KOPIM",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "DKWEG",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "DKWEG",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "OFFSACCT",
-											"type": "String",
-											"physicalType": "N"
-										},
-										"sink": {
-											"name": "OFFSACCT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "BAPOVAR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "BAPOVAR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XCOS",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XCOS",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XCESSION",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XCESSION",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XSPLT",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XSPLT",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "SURCCM",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "SURCCM",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "DTPROV",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "DTPROV",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "DTAMTC",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "DTAMTC",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "DTTAXC",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "DTTAXC",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "DTTDSP",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "DTTDSP",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "DTAXR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "DTAXR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XVATDATE",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XVATDATE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "PST_PER_VAR",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "PST_PER_VAR",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "XBBSC",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "XBBSC",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "F_OBSOLETE",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "F_OBSOLETE",
-											"type": "String",
-											"physicalType": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FM_DERIVE_ACC",
-											"type": "String",
-											"physicalType": "C"
-										},
-										"sink": {
-											"name": "FM_DERIVE_ACC",
-											"type": "String",
-											"physicalType": "String"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SapTableResource1",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "kmoutputfile2",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -1892,8 +1073,7 @@
 				"lastPublishTime": "2022-05-05T15:50:29Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SapTableResource1')]",
-				"[concat(variables('factoryId'), '/datasets/kmoutputfile2')]"
+				"[concat(variables('factoryId'), '/dataflows/sapglparquet')]"
 			]
 		},
 		{
@@ -2310,6 +1490,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "sapska1parquet",
 						"folderPath": "output",
 						"container": "km1cont2"
 					},
@@ -2360,6 +1541,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "sapskatparquet",
 						"folderPath": "output",
 						"container": "km1cont2"
 					},
@@ -2617,7 +1799,7 @@
 								"referenceName": "sapskatparquet1",
 								"type": "DatasetReference"
 							},
-							"name": "ssapskatparquet"
+							"name": "sapskatparquet"
 						}
 					],
 					"transformations": [],
@@ -2633,14 +1815,18 @@
 						"sapska1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['sapska1parquet'],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sapska1parquet",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sapska1parquet",
 						"sapskat sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['sapskatparquet'],",
 						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> ssapskatparquet"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sapskatparquet"
 					]
 				}
 			},

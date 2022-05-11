@@ -480,6 +480,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "sapska1parquet",
 						"folderPath": "output",
 						"container": "km1cont2"
 					},
@@ -530,6 +531,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "sapskatparquet",
 						"folderPath": "output",
 						"container": "km1cont2"
 					},
