@@ -28,7 +28,174 @@
 							"type": "JsonWriteSettings"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "MANDT",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['MANDT']"
+								}
+							},
+							{
+								"source": {
+									"name": "KTOPL",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['KTOPL']"
+								}
+							},
+							{
+								"source": {
+									"name": "SAKNR",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['SAKNR']"
+								}
+							},
+							{
+								"source": {
+									"name": "XBILK",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['XBILK']"
+								}
+							},
+							{
+								"source": {
+									"name": "SAKAN",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['SAKAN']"
+								}
+							},
+							{
+								"source": {
+									"name": "BILKT",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['BILKT']"
+								}
+							},
+							{
+								"source": {
+									"name": "ERDAT",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['ERDAT']"
+								}
+							},
+							{
+								"source": {
+									"name": "ERNAM",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['ERNAM']"
+								}
+							},
+							{
+								"source": {
+									"name": "GVTYP",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['GVTYP']"
+								}
+							},
+							{
+								"source": {
+									"name": "KTOKS",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['KTOKS']"
+								}
+							},
+							{
+								"source": {
+									"name": "MUSTR",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['MUSTR']"
+								}
+							},
+							{
+								"source": {
+									"name": "VBUND",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['VBUND']"
+								}
+							},
+							{
+								"source": {
+									"name": "XLOEV",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['XLOEV']"
+								}
+							},
+							{
+								"source": {
+									"name": "XSPEA",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['XSPEA']"
+								}
+							},
+							{
+								"source": {
+									"name": "XSPEB",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['XSPEB']"
+								}
+							},
+							{
+								"source": {
+									"name": "XSPEP",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['XSPEP']"
+								}
+							},
+							{
+								"source": {
+									"name": "MCOD1",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['MCOD1']"
+								}
+							},
+							{
+								"source": {
+									"name": "FUNC_AREA",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['FUNC_AREA']"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
