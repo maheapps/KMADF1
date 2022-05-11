@@ -48,14 +48,17 @@
 				"sapska1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
+				"     partitionFileNames:['sapska1parquet'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sapska1parquet",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sapska1parquet",
 				"sapskat sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> ssapskatparquet"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ssapskatparquet"
 			]
 		}
 	}
