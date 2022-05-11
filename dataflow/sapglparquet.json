@@ -49,6 +49,7 @@
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     partitionFileNames:['sapska1parquet'],",
+				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> sapska1parquet",
