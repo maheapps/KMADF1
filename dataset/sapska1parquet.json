@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "sapska1parquet",
 				"folderPath": "output",
 				"container": "km1cont2"
 			},
