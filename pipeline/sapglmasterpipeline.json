@@ -213,14 +213,7 @@
 			{
 				"name": "sapskat",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "sapska1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -254,6 +247,326 @@
 				"outputs": [
 					{
 						"referenceName": "sapskatjson",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "ska1jsontoparquet",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "sapska1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['MANDT']"
+								},
+								"sink": {
+									"name": "MANDT"
+								}
+							},
+							{
+								"source": {
+									"path": "$['KTOPL']"
+								},
+								"sink": {
+									"name": "KTOPL"
+								}
+							},
+							{
+								"source": {
+									"path": "$['SAKNR']"
+								},
+								"sink": {
+									"name": "SAKNR"
+								}
+							},
+							{
+								"source": {
+									"path": "$['XBILK']"
+								},
+								"sink": {
+									"name": "XBILK"
+								}
+							},
+							{
+								"source": {
+									"path": "$['SAKAN']"
+								},
+								"sink": {
+									"name": "SAKAN"
+								}
+							},
+							{
+								"source": {
+									"path": "$['BILKT']"
+								},
+								"sink": {
+									"name": "BILKT"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ERDAT']"
+								},
+								"sink": {
+									"name": "ERDAT"
+								}
+							},
+							{
+								"source": {
+									"path": "$['ERNAM']"
+								},
+								"sink": {
+									"name": "ERNAM"
+								}
+							},
+							{
+								"source": {
+									"path": "$['GVTYP']"
+								},
+								"sink": {
+									"name": "GVTYP"
+								}
+							},
+							{
+								"source": {
+									"path": "$['KTOKS']"
+								},
+								"sink": {
+									"name": "KTOKS"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MUSTR']"
+								},
+								"sink": {
+									"name": "MUSTR"
+								}
+							},
+							{
+								"source": {
+									"path": "$['VBUND']"
+								},
+								"sink": {
+									"name": "VBUND"
+								}
+							},
+							{
+								"source": {
+									"path": "$['XLOEV']"
+								},
+								"sink": {
+									"name": "XLOEV"
+								}
+							},
+							{
+								"source": {
+									"path": "$['XSPEA']"
+								},
+								"sink": {
+									"name": "XSPEA"
+								}
+							},
+							{
+								"source": {
+									"path": "$['XSPEB']"
+								},
+								"sink": {
+									"name": "XSPEB"
+								}
+							},
+							{
+								"source": {
+									"path": "$['XSPEP']"
+								},
+								"sink": {
+									"name": "XSPEP"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MCOD1']"
+								},
+								"sink": {
+									"name": "MCOD1"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FUNC_AREA']"
+								},
+								"sink": {
+									"name": "FUNC_AREA"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "sapska1json",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sapska1parquet",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "skatjsontoparquet",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "sapskat",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['MANDT']"
+								},
+								"sink": {
+									"name": "MANDT"
+								}
+							},
+							{
+								"source": {
+									"path": "$['SPRAS']"
+								},
+								"sink": {
+									"name": "SPRAS"
+								}
+							},
+							{
+								"source": {
+									"path": "$['KTOPL']"
+								},
+								"sink": {
+									"name": "KTOPL"
+								}
+							},
+							{
+								"source": {
+									"path": "$['SAKNR']"
+								},
+								"sink": {
+									"name": "SAKNR"
+								}
+							},
+							{
+								"source": {
+									"path": "$['TXT20']"
+								},
+								"sink": {
+									"name": "TXT20"
+								}
+							},
+							{
+								"source": {
+									"path": "$['TXT50']"
+								},
+								"sink": {
+									"name": "TXT50"
+								}
+							},
+							{
+								"source": {
+									"path": "$['MCOD1']"
+								},
+								"sink": {
+									"name": "MCOD1"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "sapskatjson",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sapskatparquet1",
 						"type": "DatasetReference"
 					}
 				]
