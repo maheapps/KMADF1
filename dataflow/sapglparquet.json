@@ -32,7 +32,7 @@
 						"referenceName": "sapskatparquet1",
 						"type": "DatasetReference"
 					},
-					"name": "ssapskatparquet"
+					"name": "sapskatparquet"
 				}
 			],
 			"transformations": [],
@@ -55,10 +55,11 @@
 				"sapskat sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
+				"     partitionFileNames:['sapskatparquet'],",
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> ssapskatparquet"
+				"     partitionBy('hash', 1)) ~> sapskatparquet"
 			]
 		}
 	}
