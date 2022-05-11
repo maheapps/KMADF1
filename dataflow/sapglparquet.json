@@ -35,17 +35,30 @@
 					"name": "sapskatparquet"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "sapska1select"
+				},
+				{
+					"name": "sapskatselect"
+				}
+			],
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> sapska1",
+				"     documentForm: 'singleDocument',",
+				"     partitionBy('hash', 1)) ~> sapska1",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> sapskat",
-				"sapska1 sink(allowSchemaDrift: true,",
+				"     documentForm: 'singleDocument') ~> sapskat",
+				"sapska1 select(skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sapska1select",
+				"sapskat select(partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sapskatselect",
+				"sapska1select sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     partitionFileNames:['sapska1parquet'],",
@@ -53,7 +66,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> sapska1parquet",
-				"sapskat sink(allowSchemaDrift: true,",
+				"sapskatselect sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     partitionFileNames:['sapskatparquet'],",
