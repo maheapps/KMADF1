@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "sapskatjson",
 				"folderPath": "input",
 				"container": "km1cont1"
 			}
