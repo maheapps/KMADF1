@@ -21,6 +21,42 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/SapTableResource2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SapTable1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapTableResource",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "SKA1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SapTableResource3')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SapTable1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapTableResource",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "SKA1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -136,6 +172,71 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     partitionBy('hash', 1)) ~> glmaster"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapglparquet')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "sapska1json",
+								"type": "DatasetReference"
+							},
+							"name": "sapska1"
+						},
+						{
+							"dataset": {
+								"referenceName": "sapskatjson",
+								"type": "DatasetReference"
+							},
+							"name": "sapskat"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "sapska1parquet",
+								"type": "DatasetReference"
+							},
+							"name": "sapska1parquet"
+						},
+						{
+							"dataset": {
+								"referenceName": "sapskatparquet1",
+								"type": "DatasetReference"
+							},
+							"name": "ssapskatparquet"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> sapska1",
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> sapskat",
+						"sapska1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sapska1parquet",
+						"sapskat sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     truncate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> ssapskatparquet"
 					]
 				}
 			},
@@ -319,7 +420,9 @@
 				"annotations": [],
 				"lastPublishTime": "2022-05-08T06:35:28Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SapTableResource2')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/sapglmasterpipeline')]",
@@ -391,15 +494,8 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
+								"type": "SapTableSource",
+								"partitionOption": "None"
 							},
 							"sink": {
 								"type": "JsonSink",
@@ -414,7 +510,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "sapskatjson",
+								"referenceName": "SapTableResource1",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -434,7 +530,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SapTableResource3')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/sapvbakpipeline')]",

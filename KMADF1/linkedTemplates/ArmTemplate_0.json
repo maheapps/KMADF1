@@ -467,6 +467,81 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/sapska1parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output",
+						"container": "km1cont2"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapskatjson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "sapskatjson",
+						"folderPath": "input",
+						"container": "km1cont1"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sapskatparquet1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "kmlinkedserviceblob1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "output",
+						"container": "km1cont2"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SapTable1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -493,31 +568,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/sapskatjson')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "kmlinkedserviceblob1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "sapskatjson",
-						"folderPath": "input",
-						"container": "km1cont1"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/kmlinkedserviceblob1')]"
 			]
 		},
 		{
@@ -984,46 +1034,6 @@
 				"schema": [],
 				"typeProperties": {
 					"tableName": "SKAT"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SapTable1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SapTableResource2')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SapTable1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SapTableResource",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "SKA1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SapTable1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SapTableResource3')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SapTable1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SapTableResource",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "SKA1"
 				}
 			},
 			"dependsOn": [
