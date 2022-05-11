@@ -3,17 +3,7 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "salesdatapipiline",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"filename": "hourlysales"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
 			"blobPathBeginsWith": "/km1cont1/blobs/input/hourlysales",
