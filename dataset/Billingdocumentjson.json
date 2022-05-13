@@ -1,0 +1,20 @@
+{
+	"name": "Billingdocumentjson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "kmlinkedserviceblob1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "BillingDocumentFullDataSet.json",
+				"folderPath": "output2",
+				"container": "km1cont2"
+			}
+		},
+		"schema": {}
+	}
+}
