@@ -48,7 +48,62 @@
 						}
 					},
 					"enableStaging": false,
-					"validateDataConsistency": false
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Duration",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Duration",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Date",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Date",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Pulse",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Pulse",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Maxpulse",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Maxpulse",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Calories",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Calories",
+									"type": "String"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
