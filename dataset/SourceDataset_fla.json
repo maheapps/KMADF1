@@ -1,0 +1,45 @@
+{
+	"name": "SourceDataset_fla",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "DirtyData.csv",
+				"folderPath": "input",
+				"container": "km1cont1"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Duration",
+				"type": "String"
+			},
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Pulse",
+				"type": "String"
+			},
+			{
+				"name": "Maxpulse",
+				"type": "String"
+			},
+			{
+				"name": "Calories",
+				"type": "String"
+			}
+		]
+	}
+}
