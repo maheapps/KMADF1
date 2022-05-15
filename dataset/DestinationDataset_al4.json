@@ -1,0 +1,24 @@
+{
+	"name": "DestinationDataset_al4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "kmsynapse1-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "ska1",
+				"folderPath": "kminput1",
+				"fileSystem": "kmstr1"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
