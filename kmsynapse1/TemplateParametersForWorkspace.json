@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "kmsynapse1"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"SapTable1_password": {
+			"value": ""
+		},
+		"kmlinkedserviceblob1_connectionString": {
+			"value": ""
+		},
+		"kmsynapse1-WorkspaceDefaultSqlServer_connectionString": {
+			"value": ""
+		},
+		"SapTable1_properties_typeProperties_clientId": {
+			"value": "800"
+		},
+		"SapTable1_properties_typeProperties_userName": {
+			"value": "DIGITAL6"
+		},
+		"SapTable1_properties_typeProperties_server": {
+			"value": "52.252.116.118"
+		},
+		"SapTable1_properties_typeProperties_systemNumber": {
+			"value": "00"
+		},
+		"kmsynapse1-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://kmdlgen1.dfs.core.windows.net"
+		},
+		"filetrigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/e7eeffbb-a3a2-46ab-aaf5-b356c47bb033/resourceGroups/KMRG/providers/Microsoft.Storage/storageAccounts/kmstoracc1"
+		}
+	}
+}
